@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import NFCModule from './App/Modules/NFCModule';
+import Drawer from 'react-native-drawer';
+import ControlPanel from './ControlPanel';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class TagMaButt extends Component {
   constructor(props) {
@@ -21,29 +24,46 @@ export default class TagMaButt extends Component {
   }
 
   render() {
+    const myIcon = (<Icon name="bars" size={30} color="#900" onPress={this.openControlPanel.bind(this)}/>)
+
     return (
-      <TouchableWithoutFeedback onPress={dismissKeyboard}>
-        <View style={styles.container}>
-          <Text style={styles.welcome}>
-            Enter order number
-          </Text>
-          <TextInput
-             ref="4"
-             style={styles.singleLine}
-             keyboardType="numeric"
-             placeholder="eg. 1206"
-             blurOnSubmit={false}
-             onSubmitEditing={dismissKeyboard}
-             onChangeText={(text) => {this.setState({text})}}
-           />
-         <TouchableHighlight onPress={this._onPressButton.bind(this)}>
-            <Image
-              style={styles.button}
-              source={require('./myButton.png')}
-            />
-         </TouchableHighlight>
-        </View>
-      </TouchableWithoutFeedback>
+      <Drawer
+        ref={(ref) => this._drawer = ref}
+        type="overlay"
+        content={<ControlPanel />}
+        tapToClose={true}
+        openDrawerOffset={0.2}
+        panCloseMask={0.2}
+        closedDrawerOffset={-3}
+        styles={drawerStyles}
+        tweenHandler={(ratio) => ({
+          main: { opacity:(2-ratio)/2 }
+        })}
+      >
+        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+          <View style={styles.container}>
+            {myIcon}
+            <Text style={styles.welcome}>
+              Enter order number
+            </Text>
+            <TextInput
+               ref="4"
+               style={styles.singleLine}
+               keyboardType="numeric"
+               placeholder="eg. 1206"
+               blurOnSubmit={false}
+               onSubmitEditing={dismissKeyboard}
+               onChangeText={(text) => {this.setState({text})}}
+             />
+           <TouchableHighlight onPress={this._onPressButton.bind(this)}>
+              <Image
+                style={styles.button}
+                source={require('./myButton.png')}
+              />
+           </TouchableHighlight>
+          </View>
+        </TouchableWithoutFeedback>
+      </Drawer>
     );
   }
 
@@ -64,6 +84,14 @@ export default class TagMaButt extends Component {
       }
     });
   }
+
+  closeControlPanel = () => {
+    this._drawer.close()
+  };
+
+  openControlPanel = () => {
+    this._drawer.open()
+  };
 }
 
 async function tagMaButt(orderNumber) {
@@ -75,6 +103,11 @@ async function tagMaButt(orderNumber) {
   } catch (error) {
     console.error(error);
   }
+}
+
+const drawerStyles = {
+  drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3 },
+  main: {paddingLeft: 3},
 }
 
 const styles = StyleSheet.create({

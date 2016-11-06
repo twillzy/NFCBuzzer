@@ -2,6 +2,7 @@ package com.tagmabutt;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,6 +26,7 @@ public class NFCModule extends ReactContextBaseJavaModule implements ActivityEve
     private NFCManager nfcManager;
     private NdefMessage ndefMessage = null;
     Tag currentTag;
+    private Promise promise;
 
     public NFCModule(ReactApplicationContext reactContext, Activity activity) {
         super(reactContext);
@@ -39,13 +41,13 @@ public class NFCModule extends ReactContextBaseJavaModule implements ActivityEve
     }
 
     @ReactMethod
-    public void tagMaButt(Promise promise) {
+    public void tagMaButt(String orderNumber, Promise promise) {
+        this.promise = promise;
         try {
-            ndefMessage = nfcManager.createUriMessage("www.google.com/tagmabutt", "http://");
-
-            WritableMap map = Arguments.createMap();
-            map.putString("tagStatus", "tagged");
-            promise.resolve(map);
+            ndefMessage = nfcManager.createUriMessage("www.order-app-web-12.herokuapp.com/orders/" + orderNumber, "https://");
+            if (ndefMessage != null) {
+                Toast.makeText(getReactApplicationContext(), "Tag NFC Tag please", Toast.LENGTH_LONG).show();
+            }
         } catch (IllegalViewOperationException e) {
             promise.reject(e);
         }
@@ -60,9 +62,13 @@ public class NFCModule extends ReactContextBaseJavaModule implements ActivityEve
     public void onNewIntent(Intent intent) {
         Log.d("Nfc", "New intent");
         // It is the time to write the tag
+        WritableMap map = Arguments.createMap();
         currentTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         if (ndefMessage != null) {
+            Toast.makeText(getReactApplicationContext(), "NFC Tag Detected", Toast.LENGTH_SHORT).show();
             nfcManager.writeTag(currentTag, ndefMessage);
+            map.putString("tagStatus", "tagged");
+            promise.resolve(map);
         } else {
 
         }

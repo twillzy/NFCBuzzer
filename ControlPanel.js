@@ -27,21 +27,41 @@ export default class ControlPanel extends Component {
   }
 
   render() {
-    const myIcon = (<Icon name="bars" size={30} color="#900" onPress={this.buzz.bind(this)}/>)
     return (
       <View style={styles.container}>
         <ListView
+          enableEmptySections={true}
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text>Order: {rowData}<Icon ref={rowData} name="bars" size={30} color="#900" onPress={this.buzz.bind(this)}/></Text>}
-          style={styles.orderListItem}
+          renderRow={(rowData) =>
+            <View>
+              <Text>Order: {rowData.orderNumber}</Text>
+              <Icon name="bars" size={30} color="#900" onPress={this.buzz.bind(this, rowData)}/>
+            </View>
+          }
         />
       </View>
     )
   }
 
-  buzz() {
-    console.log("buzz....");
-    // Update progress to done
+  buzz(rowData) {
+    console.log(rowData);
+    fetch('https://order-app-web-12.herokuapp.com/api/order/136945d8-3eee-4f5f-bd5b-151fe3ebdf02', {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inProgress: false
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 }
 
@@ -51,7 +71,5 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderWidth: 1,
     backgroundColor: "red",
-  },
-  orderListItem: {
   }
 });

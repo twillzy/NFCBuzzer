@@ -69,8 +69,11 @@ export default class TagMaButt extends Component {
   }
 
   _onPressButton() {
+    // this.setState({
+    //   orders: this.state.orders.concat([{orderId: responseJson.id, orderNumber: this.state.text}])
+    // });
     this.setState({
-      orders: this.state.orders.concat([this.state.text])
+      orders: this.state.orders.concat([{orderId: 'xxx', orderNumber: this.state.text}])
     });
     // fetch('https://order-app-web-12.herokuapp.com/api/order', {
     //   method: 'POST',

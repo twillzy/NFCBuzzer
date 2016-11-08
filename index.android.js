@@ -19,7 +19,7 @@ export default class TagMaButt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      orders: [''],
+      orders: [],
       text: ''
     };
   }

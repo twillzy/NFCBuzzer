@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ListView,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class ControlPanel extends Component {
   constructor(props) {
@@ -26,15 +27,21 @@ export default class ControlPanel extends Component {
   }
 
   render() {
+    const myIcon = (<Icon name="bars" size={30} color="#900" onPress={this.buzz.bind(this)}/>)
     return (
       <View style={styles.container}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text>{rowData}</Text>}
+          renderRow={(rowData) => <Text>Order: {rowData}<Icon ref={rowData} name="bars" size={30} color="#900" onPress={this.buzz.bind(this)}/></Text>}
           style={styles.orderListItem}
         />
       </View>
     )
+  }
+
+  buzz() {
+    console.log("buzz....");
+    // Update progress to done
   }
 }
 

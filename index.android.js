@@ -68,21 +68,22 @@ export default class TagMaButt extends Component {
   }
 
   _onPressButton() {
-    tagMaButt(this.state.text).then((tagStatus) => {
-      if(tagStatus === 'tagged') {
-        console.log('posting....');
-        // fetch('https://www.order-app-web-12.herokuapp.com/orders', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Accept': 'application/json',
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     orderNumber: '',
-        //   })
-        // });
-      }
-    });
+    fetch('https://order-app-web-12.herokuapp.com/api/order', {
+      method: 'POST',
+      body: JSON.stringify({
+        orderNumber: this.state.text
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      return tagMaButt(responseJson.id)
+    })
+    .then((tagStatus) => {
+      console.log("tagStatus " + tagStatus)
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   closeControlPanel = () => {

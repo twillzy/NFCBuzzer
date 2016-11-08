@@ -44,7 +44,7 @@ public class NFCModule extends ReactContextBaseJavaModule implements ActivityEve
     public void tagMaButt(String orderNumber, Promise promise) {
         this.promise = promise;
         try {
-            ndefMessage = nfcManager.createUriMessage("www.order-app-web-12.herokuapp.com/orders/" + orderNumber, "https://");
+            ndefMessage = nfcManager.createUriMessage("order-app-web-12.herokuapp.com/#/order/" + orderNumber, "https://");
             if (ndefMessage != null) {
                 Toast.makeText(getReactApplicationContext(), "Tag NFC Tag please", Toast.LENGTH_LONG).show();
             }

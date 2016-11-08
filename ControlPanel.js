@@ -19,7 +19,7 @@ export default class ControlPanel extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.orders.length !== nextProps.orders.length) {
       const nextOrder = nextProps.orders[nextProps.orders.length - 1];
-      const orders = this.props.orders.concat(nextOrder);
+      const orders = this.state.dataSource._dataBlob.s1.concat(nextOrder);
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(orders)
       });
@@ -30,12 +30,14 @@ export default class ControlPanel extends Component {
     return (
       <View style={styles.container}>
         <ListView
+          style={styles.orderList}
           enableEmptySections={true}
           dataSource={this.state.dataSource}
+          renderHeader={() => <Text style={styles.header}>Orders</Text>}
           renderRow={(rowData) =>
-            <View>
-              <Text>Order: {rowData.orderNumber}</Text>
-              <Icon name="bars" size={30} color="#900" onPress={this.buzz.bind(this, rowData)}/>
+            <View style={styles.orderItem}>
+              <Text style={styles.orderItemText}><Icon name="slack" size={30} color="#746672"/> {rowData.orderNumber}</Text>
+              <Icon name="bell" size={30} color="#FF7A5A" onPress={this.buzz.bind(this, rowData)}/>
             </View>
           }
         />
@@ -44,8 +46,7 @@ export default class ControlPanel extends Component {
   }
 
   buzz(rowData) {
-    console.log(rowData);
-    fetch('https://order-app-web-12.herokuapp.com/api/order/136945d8-3eee-4f5f-bd5b-151fe3ebdf02', {
+    fetch('https://order-app-web-12.herokuapp.com/api/order/' + rowData.orderId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -58,6 +59,13 @@ export default class ControlPanel extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
       console.log(responseJson);
+      const ordersInProgress = this.state.dataSource._dataBlob.s1.filter((order) => {
+        return order.orderId !== responseJson.id;
+        // return order.orderNumber !== rowData.orderNumber;
+      });
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(ordersInProgress)
+      });
     })
     .catch(err => {
       console.log(err);
@@ -68,8 +76,24 @@ export default class ControlPanel extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderColor: "black",
-    borderWidth: 1,
-    backgroundColor: "red",
+    backgroundColor: "#4D394B",
+  },
+  orderList: {
+    marginLeft: 15,
+    marginRight: 25,
+  },
+  header: {
+    marginTop: 15,
+    fontSize: 35,
+    color: '#FFFFFF',
+  },
+  orderItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  orderItemText: {
+    color: '#746672',
+    fontSize: 40,
   }
 });

@@ -62,10 +62,6 @@ export default class TagMaButt extends Component {
                     onChangeText={(text) => {this.setState({text: text})}}
                   />
                   <TouchableHighlight style={styles.plusIcon} onPress={this._onPressButton.bind(this)}>
-                     {/*<Image
-                       style={styles.button}
-                       source={require('./myButton.png')}
-                     />*/}
                      <View>
                        {plusIcon}
                      </View>
@@ -79,28 +75,28 @@ export default class TagMaButt extends Component {
   }
 
   _onPressButton() {
-    // this.setState({
-    //   orders: this.state.orders.concat([{orderId: responseJson.id, orderNumber: this.state.text}])
-    // });
-    this.setState({
-      orders: this.state.orders.concat([{orderId: 'xxx', orderNumber: this.state.text}])
+    console.log('Posting...');
+    fetch('https://order-app-web-12.herokuapp.com/api/order', {
+      method: 'POST',
+      body: JSON.stringify({
+        orderNumber: this.state.text
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if(responseJson.id) {
+        this.setState({
+          orders: this.state.orders.concat([{orderId: responseJson.id, orderNumber: this.state.text}])
+        });
+        return tagMaButt(responseJson.id);
+      }
+    })
+    .then((tagStatus) => {
+      console.log("TagStatus " + tagStatus);
+    })
+    .catch((err) => {
+      console.log(err);
     });
-    // fetch('https://order-app-web-12.herokuapp.com/api/order', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     orderNumber: this.state.text
-    //   })
-    // })
-    // .then((response) => response.json())
-    // .then((responseJson) => {
-    //   return tagMaButt(responseJson.id)
-    // })
-    // .then((tagStatus) => {
-    //   console.log("tagStatus " + tagStatus)
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
   }
 
   closeControlPanel = () => {
@@ -113,6 +109,7 @@ export default class TagMaButt extends Component {
 }
 
 async function tagMaButt(orderNumber) {
+  console.log('Tagging... ');
   try {
     var {
       tagStatus
@@ -138,16 +135,13 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     position: 'absolute',
-    // backgroundColor: 'red',
     justifyContent: 'center',
     marginTop: 15,
     marginLeft: 15,
     alignSelf: 'flex-start',
   },
   body: {
-    // backgroundColor: 'blue',
     flex: 10,
-    // flexDirection: 'row',
     marginLeft: 15,
     marginRight: 15,
     justifyContent: 'center',
@@ -158,27 +152,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 50,
     color: '#462066',
-    // flex: 1,
-    // backgroundColor: 'green',
-    // flexDirection: 'column',
     justifyContent: 'center',
-    // alignSelf: 'flex-end',
     alignItems: 'center',
-    // padding: 40
     marginBottom: 40,
-    // paddingBottom: 20,
   },
   searchBar: {
-    // flex: 1,
     flexDirection: 'row',
-    // backgroundColor: 'pink',
     borderWidth: 0.8,
     borderRadius: 3,
     paddingLeft: 5
-  },
-  footer: {
-    flex: 8,
-    backgroundColor: 'purple',
   },
   plusIcon: {
     flex: 1,

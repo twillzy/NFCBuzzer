@@ -25,7 +25,8 @@ export default class TagMaButt extends Component {
   }
 
   render() {
-    const myIcon = (<Icon name="bars" size={30} color="#900" onPress={this.openControlPanel.bind(this)}/>)
+    const barsIcon = (<Icon name="bars" size={25} color="#717274" onPress={this.openControlPanel.bind(this)}/>)
+    const plusIcon = (<Icon name="plus" size={35} color="white"/>)
 
     return (
       <Drawer
@@ -43,25 +44,31 @@ export default class TagMaButt extends Component {
       >
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
           <View style={styles.container}>
-            {myIcon}
-            <Text style={styles.welcome}>
-              Enter order number
-            </Text>
-            <TextInput
-               ref="4"
-               style={styles.singleLine}
-               keyboardType="numeric"
-               placeholder="eg. 1206"
-               blurOnSubmit={false}
-               onSubmitEditing={dismissKeyboard}
-               onChangeText={(text) => {this.setState({text: text})}}
-             />
-           <TouchableHighlight onPress={this._onPressButton.bind(this)}>
-              <Image
-                style={styles.button}
-                source={require('./myButton.png')}
-              />
-           </TouchableHighlight>
+            <View style={styles.header}>
+              {barsIcon}
+            </View>
+            <View style={styles.body}>
+              <View style={styles.searchBar}>
+                <TextInput
+                   style={styles.singleLine}
+                   keyboardType="numeric"
+                   underlineColorAndroid="transparent"
+                   placeholder="Enter new order number..."
+                   blurOnSubmit={false}
+                   onSubmitEditing={dismissKeyboard}
+                   onChangeText={(text) => {this.setState({text: text})}}
+                 />
+                 <TouchableHighlight style={styles.plusIcon} onPress={this._onPressButton.bind(this)}>
+                    {/*<Image
+                      style={styles.button}
+                      source={require('./myButton.png')}
+                    />*/}
+                    <View>
+                      {plusIcon}
+                    </View>
+                 </TouchableHighlight>
+               </View>
+            </View>
           </View>
         </TouchableWithoutFeedback>
       </Drawer>
@@ -125,25 +132,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  header: {
+    flex: 1,
+    // backgroundColor: 'red',
+    justifyContent: 'center',
+    marginLeft: 15,
+    alignSelf: 'flex-start',
+  },
+  body: {
+    // backgroundColor: 'blue',
+    flex: 10,
+    flexDirection: 'row',
+    marginLeft: 15,
+    marginRight: 15,
+    alignItems: 'center',
   },
   instructions: {
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
   },
+  searchBar: {
+    flex: 1,
+    flexDirection: 'row',
+    // backgroundColor: 'pink',
+    borderWidth: 0.8,
+    borderRadius: 3,
+    paddingLeft: 5
+  },
   button: {
     width: 100,
     height: 100,
     marginTop: 20
   },
+  plusIcon: {
+    flex: 1,
+    backgroundColor: '#56B68B',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   singleLine: {
-    fontSize: 20,
-    padding: 10,
-    paddingHorizontal: 40,
+    flex: 5,
+    fontSize: 15,
   },
 });
 

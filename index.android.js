@@ -19,7 +19,8 @@ export default class TagMaButt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: '',
+      orders: [''],
+      text: ''
     };
   }
 
@@ -30,7 +31,7 @@ export default class TagMaButt extends Component {
       <Drawer
         ref={(ref) => this._drawer = ref}
         type="overlay"
-        content={<ControlPanel />}
+        content={<ControlPanel orders={this.state.orders}/>}
         tapToClose={true}
         openDrawerOffset={0.2}
         panCloseMask={0.2}
@@ -53,7 +54,7 @@ export default class TagMaButt extends Component {
                placeholder="eg. 1206"
                blurOnSubmit={false}
                onSubmitEditing={dismissKeyboard}
-               onChangeText={(text) => {this.setState({text})}}
+               onChangeText={(text) => {this.setState({text: text})}}
              />
            <TouchableHighlight onPress={this._onPressButton.bind(this)}>
               <Image
@@ -68,22 +69,25 @@ export default class TagMaButt extends Component {
   }
 
   _onPressButton() {
-    fetch('https://order-app-web-12.herokuapp.com/api/order', {
-      method: 'POST',
-      body: JSON.stringify({
-        orderNumber: this.state.text
-      })
-    })
-    .then((response) => response.json())
-    .then((responseJson) => {
-      return tagMaButt(responseJson.id)
-    })
-    .then((tagStatus) => {
-      console.log("tagStatus " + tagStatus)
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+    this.setState({
+      orders: this.state.orders.concat([this.state.text])
+    });
+    // fetch('https://order-app-web-12.herokuapp.com/api/order', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     orderNumber: this.state.text
+    //   })
+    // })
+    // .then((response) => response.json())
+    // .then((responseJson) => {
+    //   return tagMaButt(responseJson.id)
+    // })
+    // .then((tagStatus) => {
+    //   console.log("tagStatus " + tagStatus)
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
   }
 
   closeControlPanel = () => {

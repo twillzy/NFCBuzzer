@@ -36,8 +36,8 @@ export default class ControlPanel extends Component {
           renderHeader={() => <Text style={styles.header}>Orders</Text>}
           renderRow={(rowData) =>
             <View style={styles.orderItem}>
-              <Text style={styles.orderItemText}><Icon name="slack" size={30} color="#746672"/> {rowData.orderNumber}</Text>
-              <Icon name="bell" size={30} color="#FF7A5A" onPress={this.buzz.bind(this, rowData)}/>
+              <Text style={styles.orderItemText}><Icon name="slack" size={25} color="#746672"/> {rowData.orderNumber}</Text>
+              <Icon name="bell" size={25} color="#FF7A5A" onPress={this.buzz.bind(this, rowData)}/>
             </View>
           }
         />
@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
   },
   orderItemText: {
     color: '#746672',
-    fontSize: 40,
+    fontSize: 30,
   }
 });
